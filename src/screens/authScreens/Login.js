@@ -9,23 +9,34 @@ import {useNavigation} from '@react-navigation/native';
 import {CustomInput, PrimaryButton} from '../../components';
 import Colors from '../../assets/Colors';
 import {SecondaryText} from '../../assets/CustomText';
+import auth from '@react-native-firebase/auth';
 
 const Login = () => {
   const navigation = useNavigation();
 
-  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
 
-  function onLoginPress() {
-    navigation.navigate('BottomTab');
-  }
+  const onLoginPress = async () => {
+    try {
+      const userCredential = await auth().signInWithEmailAndPassword(
+        email,
+        Password,
+      );
+      if (userCredential.user) {
+        navigation.navigate('BottomTab');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <CustomInput
-        placeholder="User Name"
-        value={userName}
-        onChangeText={value => setUserName(value)}
+        placeholder="Email"
+        value={email}
+        onChangeText={value => setEmail(value)}
         style={{marginTop: hp(15)}}
       />
 

@@ -11,6 +11,8 @@ import {CustomInput, PrimaryButton} from '../../components';
 import Colors from '../../assets/Colors';
 import {SecondaryText} from '../../assets/CustomText';
 import {UserType} from '../../MockData';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -20,7 +22,44 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mobile, setMobile] = useState('');
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState(null);
+
+  const onPressRegister = () => {
+    try {
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const user = userCredential.user;
+          const uid = user.uid;
+          firestore()
+            .collection('Users')
+            .doc(uid)
+            .set({
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              mobile: mobile,
+              userType: userType,
+              userId: uid,
+            })
+            .then(() => {
+              navigation.navigate('Login');
+            });
+        })
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+          }
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+          }
+
+          console.error(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -42,7 +81,6 @@ const Register = () => {
 
       <CustomInput
         placeholder="Email"
-        secureTextEntry
         value={email}
         onChangeText={value => setEmail(value)}
       />
@@ -81,7 +119,7 @@ const Register = () => {
         text="Register"
         textColor={Colors.white}
         containerStyle={styles.buttonStyle}
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => onPressRegister()}
       />
 
       <View style={styles.goToReg}>
