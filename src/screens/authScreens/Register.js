@@ -5,10 +5,12 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
+import {Dropdown} from 'react-native-element-dropdown';
 
 import {CustomInput, PrimaryButton} from '../../components';
 import Colors from '../../assets/Colors';
 import {SecondaryText} from '../../assets/CustomText';
+import {UserType} from '../../MockData';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -18,6 +20,7 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mobile, setMobile] = useState('');
+  const [userType, setUserType] = useState('');
 
   return (
     <View style={styles.container}>
@@ -58,6 +61,20 @@ const Register = () => {
           setMobile(value);
         }}
         keyboardType="numeric"
+      />
+
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.placeholderStyle}
+        data={UserType}
+        value={userType}
+        labelField="label"
+        valueField="value"
+        placeholder="User Type"
+        onChange={item => {
+          setUserType(item.value);
+        }}
       />
 
       <PrimaryButton
@@ -101,6 +118,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: hp(40),
+    marginTop: hp(32),
+  },
+  placeholderStyle: {
+    color: Colors.lightGray,
+  },
+  dropdown: {
+    borderBottomWidth: 1,
+    borderColor: Colors.lightGray,
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(2),
   },
 });
