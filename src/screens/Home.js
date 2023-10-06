@@ -2,6 +2,7 @@ import {
   Alert,
   FlatList,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -107,7 +108,23 @@ const Home = () => {
             />
           </View>
 
-          <FlatList data={userData} renderItem={renderUser} />
+          <FlatList
+            data={userData}
+            renderItem={renderUser}
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: '60%',
+                }}>
+                <Text style={{color: 'black', fontSize: 20}}>
+                  No data found!
+                </Text>
+              </View>
+            )}
+          />
         </>
       ) : (
         <>
