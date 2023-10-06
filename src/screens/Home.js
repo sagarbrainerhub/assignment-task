@@ -8,9 +8,10 @@ import {
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {PrimaryText, SecondaryText} from '../assets/CustomText';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const Home = () => {
+  const isFocus = useIsFocused();
   const [userData, setUserData] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -47,7 +48,7 @@ const Home = () => {
 
   useEffect(() => {
     getUserData();
-  }, []);
+  }, [isFocus]);
 
   const renderUser = ({item}) => {
     const userInfo = item?._data;
