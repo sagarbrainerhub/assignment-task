@@ -9,6 +9,8 @@ import {useNavigation} from '@react-navigation/native';
 import {CustomInput, IconButton} from '../components';
 import Colors from '../assets/Colors';
 import firestore from '@react-native-firebase/firestore';
+import {Dropdown} from 'react-native-element-dropdown';
+import {UserType} from '../MockData';
 
 const UserDeatils = ({route}) => {
   const {userInfo} = route.params;
@@ -19,6 +21,7 @@ const UserDeatils = ({route}) => {
   const [lastName, setLastName] = useState(userInfo?.lastName);
   const [email, setEmail] = useState(userInfo?.email);
   const [mobile, setMobile] = useState(userInfo?.mobile);
+  const [userType, setUserType] = useState(userInfo?.userType);
   const [editable, setEditable] = useState(false);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ const UserDeatils = ({route}) => {
           firstName: firstName,
           lastName: lastName,
           mobile: mobile,
-          // userType:userType
+          userType: userType,
         })
         .then(() => {
           setEditable(false);
@@ -111,6 +114,21 @@ const UserDeatils = ({route}) => {
           editable={editable}
           onChangeText={value => setMobile(value)}
         />
+
+        <Dropdown
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={{color: editable ? 'black' : Colors.lightGray}}
+          data={UserType}
+          value={userType}
+          labelField="label"
+          valueField="value"
+          placeholder="User Type"
+          disable={!editable}
+          onChange={item => {
+            setUserType(item.value);
+          }}
+        />
       </View>
     </View>
   );
@@ -145,5 +163,14 @@ const styles = StyleSheet.create({
   infoView: {
     marginTop: heightPercentageToDP(2),
     paddingHorizontal: widthPercentageToDP(4),
+  },
+  dropdown: {
+    borderBottomWidth: 0.5,
+    borderColor: Colors.lightGray,
+    paddingHorizontal: widthPercentageToDP(3),
+    paddingVertical: heightPercentageToDP(2),
+  },
+  placeholderStyle: {
+    color: Colors.lightGray,
   },
 });

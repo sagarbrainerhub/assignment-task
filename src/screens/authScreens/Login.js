@@ -1,10 +1,10 @@
 import {StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 import {CustomInput, PrimaryButton} from '../../components';
 import Colors from '../../assets/Colors';
@@ -13,6 +13,7 @@ import auth from '@react-native-firebase/auth';
 
 const Login = () => {
   const navigation = useNavigation();
+  const isFocus = useIsFocused();
 
   const [email, setEmail] = useState('');
   const [Password, setPassword] = useState('');
@@ -24,12 +25,17 @@ const Login = () => {
         Password,
       );
       if (userCredential.user) {
-        navigation.navigate('BottomTab');
+        navigation.navigate('Home');
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+  }, [isFocus]);
 
   return (
     <View style={styles.container}>

@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import AuthStack from './Stacks/AuthStack';
-import BottomTab from './BottomTab';
+import {Home, UserDeatils} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,8 +15,14 @@ const MainStack = () => {
       />
 
       <Stack.Screen
-        name="BottomTab"
-        component={BottomTab}
+        name="Home"
+        component={Home}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="UserDeatils"
+        component={UserDeatils}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -1,4 +1,10 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -9,11 +15,13 @@ import {
 } from 'react-native-responsive-screen';
 import {PrimaryText, SecondaryText} from '../assets/CustomText';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {IconButton} from '../components';
 
 const Home = () => {
   const isFocus = useIsFocused();
   const [userData, setUserData] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
 
   const navigation = useNavigation();
 
@@ -26,6 +34,7 @@ const Home = () => {
         .get()
         .then(async documentSnapshot => {
           const admin = documentSnapshot.data().userType == 1 ? true : false;
+          setCurrentUser(documentSnapshot.data());
           setIsAdmin(admin);
           if (admin) {
             await firestore()
@@ -62,20 +71,76 @@ const Home = () => {
     );
   };
 
+  const onLogoutPress = () => {
+    Alert.alert('', 'Are you sure, You want to Logout ?', [
+      {
+        text: 'No',
+      },
+      {
+        text: 'Yes',
+        onPress: () => {
+          auth()
+            .signOut()
+            .then(() => {
+              navigation.navigate('AuthStack');
+            });
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.mainConatiner}>
       {isAdmin ? (
         <>
-          <PrimaryText
-            text="Welcome to your Admin Panel !"
-            textColor={Colors.lightGreen}
-            style={styles.title}
-          />
+          <View style={styles.header}>
+            <PrimaryText
+              text="Welcome to your Admin Panel !"
+              textColor={Colors.lightGreen}
+              style={styles.title}
+            />
+
+            <IconButton
+              type="MaterialIcons"
+              name="logout"
+              onPress={onLogoutPress}
+            />
+          </View>
 
           <FlatList data={userData} renderItem={renderUser} />
         </>
       ) : (
-        <></>
+        <>
+          <View style={styles.header}>
+            <PrimaryText
+              text={`Welcome ${currentUser?.firstName} ${currentUser?.lastName}`}
+              textColor={Colors.lightGreen}
+            />
+
+            <IconButton
+              type="MaterialIcons"
+              name="logout"
+              onPress={onLogoutPress}
+            />
+          </View>
+
+          <View style={styles.detailList}>
+            <SecondaryText text="Your Email" />
+            <PrimaryText text={currentUser?.email} />
+          </View>
+
+          <View style={styles.detailList}>
+            <SecondaryText text="Your Mobile number" />
+            <PrimaryText text={currentUser?.mobile} />
+          </View>
+
+          <View style={styles.detailList}>
+            <SecondaryText text="Your UserType" />
+            <PrimaryText
+              text={currentUser?.userType === 1 ? 'Admin' : 'Regular'}
+            />
+          </View>
+        </>
       )}
     </View>
   );
@@ -104,8 +169,15 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderRadius: 6,
   },
-  title: {
+  header: {
     paddingVertical: heightPercentageToDP(2),
     paddingHorizontal: widthPercentageToDP(4),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  detailList: {
+    paddingHorizontal: widthPercentageToDP(4),
+    paddingVertical: heightPercentageToDP(2),
   },
 });
