@@ -16,6 +16,7 @@ const CustomInput = props => {
     width,
     secureTextEntry,
     keyboardType,
+    editable,
   } = props;
 
   const [focused, setFocused] = useState(false);
@@ -30,6 +31,7 @@ const CustomInput = props => {
       onFocus={() => setFocused(!focused)}
       onBlur={() => setFocused(!focused)}
       placeholderTextColor={Colors.lightGray}
+      editable={editable}
       style={[
         styles.container,
         style,

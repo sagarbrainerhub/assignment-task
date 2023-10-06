@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Home, Profile} from '../screens';
 import Colors from '../assets/Colors';
 import Icon from '../assets/Icon';
+import HomeStacks from './Stacks/HomeStacks';
 
 const Tab = createBottomTabNavigator();
 
@@ -11,9 +12,10 @@ const BottomTab = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
-        component={Home}
+        name="HomeStacks"
+        component={HomeStacks}
         options={{
+          title: 'Home',
           headerShown: false,
           tabBarActiveTintColor: Colors.lightGreen,
           tabBarInactiveTintColor: Colors.lightGray,

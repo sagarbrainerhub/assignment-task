@@ -1,8 +1,10 @@
 import {StyleSheet, Text} from 'react-native';
 
 export function PrimaryText(props) {
-  const {text, textColor} = props;
-  return <Text style={[styles.primaryText, {color: textColor}]}>{text}</Text>;
+  const {text, textColor, style} = props;
+  return (
+    <Text style={[styles.primaryText, {color: textColor}, style]}>{text}</Text>
+  );
 }
 
 export function SecondaryText(props) {

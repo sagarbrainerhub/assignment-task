@@ -1,14 +1,20 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import Colors from '../assets/Colors';
+import {
+  heightPercentageToDP,
+  widthPercentageToDP,
+} from 'react-native-responsive-screen';
+import {PrimaryText, SecondaryText} from '../assets/CustomText';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   const [userData, setUserData] = useState();
   const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    getUserData();
-  }, []);
+
+  const navigation = useNavigation();
 
   const getUserData = async () => {
     try {
@@ -20,20 +26,47 @@ const Home = () => {
         .then(async documentSnapshot => {
           const admin = documentSnapshot.data().userType == 1 ? true : false;
           setIsAdmin(admin);
-          if (!admin) {
+          if (admin) {
             const users = await firestore().collection('Users').get();
-            users.forEach(documentSnapshot => {
-              setUserData(documentSnapshot.data());
-            });
+            setUserData(users.docs);
           }
         });
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const renderUser = ({item}) => {
+    const userInfo = item?._data;
+
+    return (
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => navigation.navigate('UserDeatils', {userInfo})}>
+        <SecondaryText text={userInfo?.email} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={styles.mainConatiner}>
-      <Text>{isAdmin ? 'User is Admin' : 'User is not admin'}</Text>
+      {isAdmin ? (
+        <>
+          <PrimaryText
+            text="Welcome to your Admin Panel !"
+            textColor={Colors.lightGreen}
+            style={styles.title}
+          />
+
+          <FlatList data={userData} renderItem={renderUser} />
+        </>
+      ) : (
+        <></>
+      )}
     </View>
   );
 };
@@ -43,7 +76,26 @@ export default Home;
 const styles = StyleSheet.create({
   mainConatiner: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: Colors.white,
+  },
+  itemContainer: {
+    paddingHorizontal: widthPercentageToDP(3),
+    paddingVertical: heightPercentageToDP(1.5),
+    marginVertical: heightPercentageToDP(1),
+    marginHorizontal: widthPercentageToDP(4),
+    backgroundColor: Colors.white,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+    borderRadius: 6,
+  },
+  title: {
+    paddingVertical: heightPercentageToDP(2),
+    paddingHorizontal: widthPercentageToDP(4),
   },
 });
