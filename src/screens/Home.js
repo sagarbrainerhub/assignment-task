@@ -27,8 +27,17 @@ const Home = () => {
           const admin = documentSnapshot.data().userType == 1 ? true : false;
           setIsAdmin(admin);
           if (admin) {
-            const users = await firestore().collection('Users').get();
-            setUserData(users.docs);
+            await firestore()
+              .collection('Users')
+              .where('userId', '!=', userId)
+              .where('userType', '==', 2)
+              .get()
+              .then(async documentSnapshot => {
+                setUserData(documentSnapshot.docs);
+              })
+              .catch(error => {
+                console.log(error);
+              });
           }
         });
     } catch (error) {

@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 
 import {CustomInput, IconButton} from '../components';
 import Colors from '../assets/Colors';
+import firestore from '@react-native-firebase/firestore';
 
 const UserDeatils = ({route}) => {
   const {userInfo} = route.params;
@@ -27,6 +28,29 @@ const UserDeatils = ({route}) => {
       },
     ]);
   }, []);
+
+  const onPressSave = async () => {
+    try {
+      await firestore()
+        .collection('Users')
+        .doc(userInfo?.userId)
+        .update({
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          mobile: mobile,
+          // userType:userType
+        })
+        .then(() => {
+          setEditable(false);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -51,7 +75,7 @@ const UserDeatils = ({route}) => {
                 mobile?.length === 0
               ) {
               } else {
-                setEditable(false);
+                onPressSave();
               }
             }}
           />
