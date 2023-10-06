@@ -1,19 +1,18 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {CustomInput, IconButton, PrimaryButton} from '../components';
-import Colors from '../assets/Colors';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/native';
 
+import {CustomInput, IconButton} from '../components';
+import Colors from '../assets/Colors';
+
 const UserDeatils = ({route}) => {
   const {userInfo} = route.params;
 
   const navigation = useNavigation();
-
-  console.log(userInfo);
 
   const [firstName, setFirstName] = useState(userInfo?.firstName);
   const [lastName, setLastName] = useState(userInfo?.lastName);
@@ -45,7 +44,15 @@ const UserDeatils = ({route}) => {
             type="Feather"
             name="save"
             onPress={() => {
-              setEditable(false);
+              if (
+                firstName?.length === 0 ||
+                lastName?.length === 0 ||
+                email?.length === 0 ||
+                mobile?.length === 0
+              ) {
+              } else {
+                setEditable(false);
+              }
             }}
           />
         ) : (

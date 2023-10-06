@@ -50,7 +50,7 @@ export default CustomInput;
 const styles = StyleSheet.create({
   container: {
     fontSize: 16,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     paddingHorizontal: wp(3),
     paddingVertical: hp(2),
   },
